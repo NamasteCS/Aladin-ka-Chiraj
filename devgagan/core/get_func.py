@@ -650,22 +650,20 @@ async def send_media_message(app, target_chat_id, msg, caption, topic_id):
         elif msg.video and msg.video.file_name:
             file_name = msg.video.file_name
 
-        # If no caption, but file name exists, use it
-        if not caption and file_name:
-            caption = f"> 🗃️ **{file_name}**"
-        elif caption and file_name:
-            # Add blockquote formatting
+        # Caption handling
+        if caption:
+            # If caption exists → keep it same, just replace links if needed
             caption = re.sub(
                 r'https?://t\.me/[^\s]+|https?://telegram\.me/[^\s]+',
                 'https://t.me/+7R-7p7jVoz9mM2M1',
                 caption
             )
-            caption = "\n".join([f"> {line}" for line in caption.strip().splitlines()])
-            caption = f">🗃️ **{file_name}**\n\n{caption}"
-        elif caption:
-            caption = "\n".join([f"> {line}" for line in caption.strip().splitlines()])
+        elif file_name:
+            # If no caption → use only file name
+            caption = f"🗃 {file_name}"
         else:
-            caption = ">II_LevelUP_II"
+            # If nothing → fallback
+            caption = "II_LevelUP_II"
 
         # Send the message with the right method
         if msg.video:
@@ -674,7 +672,6 @@ async def send_media_message(app, target_chat_id, msg, caption, topic_id):
                 msg.video.file_id,
                 caption=caption,
                 reply_to_message_id=topic_id,
-                
             )
 
         if msg.document:
@@ -683,7 +680,6 @@ async def send_media_message(app, target_chat_id, msg, caption, topic_id):
                 msg.document.file_id,
                 caption=caption,
                 reply_to_message_id=topic_id,
-                
             )
 
         if msg.photo:
@@ -692,12 +688,14 @@ async def send_media_message(app, target_chat_id, msg, caption, topic_id):
                 msg.photo.file_id,
                 caption=caption,
                 reply_to_message_id=topic_id,
-                
             )
 
     except Exception as e:
         print(f"Error while sending media: {e}")
-        return await app.send_message(target_chat_id, f"❌ Failed to send media.\n\nError: `{e}`")
+        return await app.send_message(
+            target_chat_id,
+            f"❌ Failed to send media.\n\nError: {e}"
+        )
 
 
 
