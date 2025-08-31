@@ -663,7 +663,7 @@ async def send_media_message(app, target_chat_id, msg, caption, topic_id):
             caption = f"🗃 {file_name}"
         else:
             # If nothing → fallback
-            caption = "II_LevelUP_II"
+            caption = "@II_LevelUP_II"
 
         # Send the message with the right method
         if msg.video:
